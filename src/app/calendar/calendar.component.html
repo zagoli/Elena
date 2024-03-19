@@ -1,0 +1,10 @@
+<div class="calendar-and-clock">
+	<section>
+		<h1 class="weekday">{{ date | date:'cccc':'':'it-IT' | titlecase }}</h1>
+		<h2 class="date">{{ date | date:'longDate':'':'it-IT' }}</h2>
+	</section>
+	<section>
+		<h1 class="clock">{{ date | date:'shortTime':'':'it-IT' }}</h1>
+	</section>
+</div>
+

@@ -1,0 +1,20 @@
+.calendar-and-clock {
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+	height: 100vh;
+}
+
+.weekday {
+	text-align: center;
+	font-size: 5em;
+}
+
+.date {
+	text-align: center;
+	font-size: 3em;
+}
+
+.clock {
+	text-align: center;
+	font-size: 5em;
+}
