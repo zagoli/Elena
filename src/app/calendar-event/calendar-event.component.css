@@ -8,7 +8,7 @@
 	color: darkred;
 	padding: 5px 10px;
 	font-weight: bold;
-	font-size: 5em;
+	font-size: 7em;
 }
 
 .info-box {
@@ -16,11 +16,11 @@
 }
 
 .subject {
-	font-size: 3em;
+	font-size: 5em;
 	margin: 0;
 }
 
 .location {
-	font-size: 2em;
+	font-size: 3em;
 	margin: 0;
 }
