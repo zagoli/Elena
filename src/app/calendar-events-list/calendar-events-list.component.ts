@@ -37,7 +37,7 @@ export class CalendarEventsListComponent {
 	}
 
 	getEvents(): void {
-		this.calendarEventsService.getCalendarFile(this.calendarUrl)
+		this.calendarEventsService.getCalendarFile("https://corsproxy.io/?" + this.calendarUrl)
 			.subscribe(icsEvents => {
 				const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
 				this.todayEvents = this.todayEvents.concat(this.getEventsHappeningToday(calendarEvents));
