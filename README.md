@@ -12,4 +12,4 @@ For a live demonstration of the Elena Calendar, please visit [zagoli.com/Elena](
 
 ## Disclaimer
 
-This application is provided as-is, without any error handling. Users should be aware that unexpected behavior may occur, and the application is not guaranteed to be error-free.
+This application is provided as-is, with minimal error handling. Users should be aware that unexpected behavior may occur, and the application is not guaranteed to be error-free.

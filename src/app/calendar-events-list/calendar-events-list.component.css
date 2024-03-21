@@ -23,6 +23,11 @@ input[type=text] {
 	font-size: 1em;
 }
 
+input[type=text].getEventsError {
+	border: 1px solid red;
+	box-shadow: 4px 4px 0 red;
+}
+
 button {
 	background-color: black;
 	color: white;

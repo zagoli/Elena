@@ -20,9 +20,10 @@ import * as ICAL from 'ical.js';
 export class CalendarEventsListComponent {
 
 	urlSet = false;
+	getEventsError = false;
 	todayEvents: CalendarEvent[] = [];
 	calendarUrl = new FormControl("");
-	private today = new Date(2024, 2, 28);
+	private today = new Date();
 	private updateFrequencySeconds = 3600;
 
 	constructor(private calendarEventsService: CalendarEventsService) {
@@ -31,20 +32,47 @@ export class CalendarEventsListComponent {
 	startUpdates() {
 		this.getEvents();
 		setInterval(() => {
-			this.today = new Date();
-			this.todayEvents = [];
 			this.getEvents();
 		}, 1000 * this.updateFrequencySeconds);
 	}
 
-	getEvents(): void {
-		this.calendarEventsService.getCalendarFile("https://corsproxy.io/?" + this.calendarUrl.value)
-			.subscribe(icsEvents => {
-				const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
-				this.todayEvents = this.todayEvents.concat(this.getEventsHappeningToday(calendarEvents));
-				this.todayEvents = this.todayEvents.concat(this.getRecurrentEventsHappeningToday(icsEvents));
+	private getEvents(): void {
+		this.today = new Date();
+		this.calendarEventsService.getCalendarFile(this.calendarUrl.value!)
+			.subscribe({
+				next: icsEvents => {
+					this.urlSet = true;
+					this.getEventsError = false;
+					this.addEvents(icsEvents);
+				},
+				error: () => {
+					this.getEventsError = true;
+				}
 			});
-		this.urlSet = true;
+	}
+
+	private addEvents(icsEvents: any[]) {
+		this.todayEvents = [];
+		const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
+		this.concatUniqueEvents(this.getEventsHappeningToday(calendarEvents));
+		this.concatUniqueEvents(this.getRecurrentEventsHappeningToday(icsEvents));
+
+		this.todayEvents.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+	}
+
+	private concatUniqueEvents(events: CalendarEvent[]) {
+		events.forEach(event => {
+			const eventExists = this.todayEvents.some(existingEvent =>
+				existingEvent.summary === event.summary &&
+				existingEvent.startDate.getTime() === event.startDate.getTime() &&
+				existingEvent.endDate.getTime() === event.endDate.getTime() &&
+				existingEvent.location === event.location
+			);
+
+			if (!eventExists) {
+				this.todayEvents.push(event);
+			}
+		});
 	}
 
 	private icsEventToCalendarEvent(icsEvent: any): CalendarEvent {

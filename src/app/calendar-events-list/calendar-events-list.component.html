@@ -2,13 +2,13 @@
 	<div class="calendar-input">
 		<label for="calendar-url">Inserisci il link del calendario:</label>
 		<div class="calendar-url-input">
-			<input id="calendar-url" type="text" [formControl]="calendarUrl"/>
+			<input id="calendar-url" type="text" [formControl]="calendarUrl" [class.getEventsError]="getEventsError"/>
 			<button type="button" (click)="startUpdates()">Invia</button>
 		</div>
 	</div>
 } @else {
 	<div class="scrollable">
-		@for (event of todayEvents; track event.startDate + event.summary) {
+		@for (event of todayEvents; track event.startDate.getTime() + event.summary) {
 			<app-calendar-event [event]="event"/>
 		}
 	</div>
