@@ -21,7 +21,7 @@ export class CalendarEventsListComponent {
 	urlSet = false;
 	todayEvents: CalendarEvent[] = [];
 	calendarUrl: string = "";
-	private today = new Date();
+	private today = new Date(2024, 2, 28);
 	private updateFrequencySeconds = 3600;
 
 	constructor(private calendarEventsService: CalendarEventsService) {
@@ -61,7 +61,7 @@ export class CalendarEventsListComponent {
 
 	private getEventsHappeningToday(events: CalendarEvent[]): CalendarEvent[] {
 		return events.filter((e: CalendarEvent) => {
-			return e.startDate <= this.today && e.endDate >= this.today;
+			return this.datesEquals(e.startDate, this.today);
 		});
 	}
 
@@ -85,15 +85,21 @@ export class CalendarEventsListComponent {
 		do {
 			if (this.datesEquals(next.toJSDate(), this.today))
 				return true;
-		} while ((next = expand.next()) && next.toJSDate() <= this.today);
+		} while ((next = expand.next()) && this.datesLessEquals(next.toJSDate(), this.today));
 
 		return false;
 	}
 
+	private datesLessEquals(date1: Date, date2: Date) {
+		return date1 < date2 || this.datesEquals(date1, date2);
+	}
+
 	private datesEquals(date1: Date, date2: Date): boolean {
-		date1.setHours(0, 0, 0, 0);
-		date2.setHours(0, 0, 0, 0);
-		return date1.getTime() === date2.getTime();
+		const firstDate = structuredClone(date1);
+		const secondDate = structuredClone(date2);
+		firstDate.setHours(0, 0, 0, 0);
+		secondDate.setHours(0, 0, 0, 0);
+		return firstDate.getTime() === secondDate.getTime();
 	}
 
 }
