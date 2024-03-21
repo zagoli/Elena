@@ -1,10 +1,10 @@
 <div class="calendar-and-clock">
 	<section>
-		<h1 class="weekday">{{ date | date:'cccc' | titlecase }}</h1>
-		<h2 class="date">{{ date | date:'longDate' }}</h2>
+		<h1 class="clock">{{ date | date:'shortTime' }}</h1>
 	</section>
 	<section>
-		<h1 class="clock">{{ date | date:'shortTime' }}</h1>
+		<h1 class="weekday">{{ date | date:'cccc' | titlecase }}</h1>
+		<h2 class="date">{{ date | date:'longDate' }}</h2>
 	</section>
 </div>
 
