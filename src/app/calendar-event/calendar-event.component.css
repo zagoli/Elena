@@ -9,7 +9,7 @@
 	color: white;
 	padding: 5px 10px;
 	font-weight: bold;
-	font-size: 7em;
+	font-size: 7vw;
 }
 
 .info-box {
@@ -17,11 +17,11 @@
 }
 
 .subject {
-	font-size: 5em;
+	font-size: 7vw;
 	margin: 0;
 }
 
 .location {
-	font-size: 3em;
+	font-size: 4vw;
 	margin: 0;
 }

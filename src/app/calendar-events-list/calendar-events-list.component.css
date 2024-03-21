@@ -1,3 +1,8 @@
+.scrollable {
+	overflow-y: auto;
+	max-height: 100vh;
+}
+
 .calendar-input {
 	margin-top: 4em;
 	margin-right: 1em;
@@ -6,8 +11,7 @@
 
 .calendar-url-input {
 	display: grid;
-	grid-template-columns: 5fr 1fr;
-	padding-right: 1em;
+	grid-template-rows: 1fr 1fr;
 }
 
 input[type=text] {

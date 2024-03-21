@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {CalendarEventsService} from "../calendar-events.service";
-import {FormsModule} from "@angular/forms";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CalendarEvent} from "../types/CalendarEvent"
 import {CalendarEventComponent} from "../calendar-event/calendar-event.component";
 // @ts-ignore
@@ -11,7 +11,8 @@ import * as ICAL from 'ical.js';
 	standalone: true,
 	imports: [
 		FormsModule,
-		CalendarEventComponent
+		CalendarEventComponent,
+		ReactiveFormsModule
 	],
 	templateUrl: './calendar-events-list.component.html',
 	styleUrl: './calendar-events-list.component.css'
@@ -20,7 +21,7 @@ export class CalendarEventsListComponent {
 
 	urlSet = false;
 	todayEvents: CalendarEvent[] = [];
-	calendarUrl: string = "";
+	calendarUrl = new FormControl("");
 	private today = new Date(2024, 2, 28);
 	private updateFrequencySeconds = 3600;
 
@@ -37,7 +38,7 @@ export class CalendarEventsListComponent {
 	}
 
 	getEvents(): void {
-		this.calendarEventsService.getCalendarFile("https://corsproxy.io/?" + this.calendarUrl)
+		this.calendarEventsService.getCalendarFile("https://corsproxy.io/?" + this.calendarUrl.value)
 			.subscribe(icsEvents => {
 				const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
 				this.todayEvents = this.todayEvents.concat(this.getEventsHappeningToday(calendarEvents));

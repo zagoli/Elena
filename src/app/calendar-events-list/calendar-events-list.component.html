@@ -1,14 +1,16 @@
 @if (!urlSet) {
 	<div class="calendar-input">
-		<label for="calendar-url">Inserisci il link del calendario</label>
+		<label for="calendar-url">Inserisci il link del calendario:</label>
 		<div class="calendar-url-input">
-			<input id="calendar-url" type="text" [(ngModel)]="calendarUrl"/>
+			<input id="calendar-url" type="text" [formControl]="calendarUrl"/>
 			<button type="button" (click)="startUpdates()">Invia</button>
 		</div>
 	</div>
 } @else {
-	@for (event of todayEvents; track event.startDate + event.summary) {
-		<app-calendar-event [event]="event"/>
-	}
+	<div class="scrollable">
+		@for (event of todayEvents; track event.startDate + event.summary) {
+			<app-calendar-event [event]="event"/>
+		}
+	</div>
 }
 

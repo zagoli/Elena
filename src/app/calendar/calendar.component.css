@@ -1,20 +1,17 @@
-.calendar-and-clock {
-	display: grid;
-	grid-template-rows: 1fr 2fr;
-	height: 100vh;
-}
-
 .weekday {
 	text-align: center;
-	font-size: 10em;
+	font-size: 7vw;
+	margin-bottom: 0;
+	margin-top: 0;
 }
 
 .date {
 	text-align: center;
-	font-size: 5em;
+	font-size: 5vw;
 }
 
 .clock {
 	text-align: center;
-	font-size: 10em;
+	font-size: 9vw;
+	margin-bottom: 1rem;
 }
