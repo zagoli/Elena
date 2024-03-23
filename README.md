@@ -1,14 +1,13 @@
 # Elena Calendar for Seniors
 
-Elena is a straightforward web application designed as a calendar
-specifically tailored for seniors.
-I made it to revise my Angular basic skills.
+Elena is a straightforward web application designed as a calendar specifically tailored for seniors.
+I made it to revise my basic Angular skills.
 It features a minimalistic interface that allows users
 to insert a link to a public calendar (ICS file) to display
-the events of the current day.
+the events of the current day (in landascape orientation).
 The event list refreshes every 30 minutes.
 
-For a live demonstration of the Elena Calendar, please visit [zagoli.com/Elena](zagoli.com/Elena).
+For a live demonstration of the Elena Calendar, please visit [elena.zagoli.com](elena.zagoli.com).
 
 ## Disclaimer
 
