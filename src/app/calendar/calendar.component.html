@@ -4,7 +4,7 @@
 	</section>
 	<section>
 		<h1 class="weekday">{{ date | date:'cccc' | titlecase }}</h1>
-		<h2 class="date">{{ date | date:'longDate' }}</h2>
+		<h2 (click)="toggleFullscreen()" class="date">{{ date | date:'longDate' }}</h2>
 	</section>
 </div>
 
