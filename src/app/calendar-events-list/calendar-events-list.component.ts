@@ -23,17 +23,28 @@ export class CalendarEventsListComponent {
 	getEventsError = false;
 	todayEvents: CalendarEvent[] = [];
 	calendarUrl = new FormControl("");
-	private today = new Date();
+	private today = new Date(2024, 11, 31);
 	private updateFrequencySeconds = 3600;
+	private removePastEventsFrequencySeconds = 60;
 
 	constructor(private calendarEventsService: CalendarEventsService) {
 	}
 
 	startUpdates() {
 		this.getEvents();
+		console.log(this.todayEvents);
+		this.removePastEvents();
 		setInterval(() => {
 			this.getEvents();
 		}, 1000 * this.updateFrequencySeconds);
+		setInterval(() => {
+			this.removePastEvents();
+		}, 1000 * this.removePastEventsFrequencySeconds);
+	}
+
+	private removePastEvents(): void {
+		this.today = new Date();
+		this.todayEvents = this.todayEvents.filter((event) => event.endDate < this.today);
 	}
 
 	private getEvents(): void {
@@ -41,6 +52,7 @@ export class CalendarEventsListComponent {
 		this.calendarEventsService.getCalendarFile(this.calendarUrl.value!)
 			.subscribe({
 				next: icsEvents => {
+					console.log(icsEvents);
 					this.urlSet = true;
 					this.getEventsError = false;
 					this.addEvents(icsEvents);
@@ -54,6 +66,7 @@ export class CalendarEventsListComponent {
 	private addEvents(icsEvents: any[]) {
 		this.todayEvents = [];
 		const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
+		console.log(calendarEvents);
 		this.concatUniqueEvents(this.getEventsHappeningToday(calendarEvents));
 		this.concatUniqueEvents(this.getRecurrentEventsHappeningToday(icsEvents));
 
@@ -80,6 +93,7 @@ export class CalendarEventsListComponent {
 			summary: icsEvent.summary,
 			startDate: icsEvent.startDate.toJSDate(),
 			endDate: icsEvent.endDate.toJSDate(),
+			description: icsEvent.description,
 			location: icsEvent.location
 		}
 	}
@@ -90,6 +104,7 @@ export class CalendarEventsListComponent {
 
 	private getEventsHappeningToday(events: CalendarEvent[]): CalendarEvent[] {
 		return events.filter((e: CalendarEvent) => {
+			console.log(e.startDate, this.today, this.datesEquals(e.startDate, this.today));
 			return this.datesEquals(e.startDate, this.today);
 		});
 	}
