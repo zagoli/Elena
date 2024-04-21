@@ -1,4 +1,4 @@
-<main>
+<main [class.calendarOnly]="hideEvents">
 	<app-calendar/>
-	<app-calendar-events-list/>
+	<app-calendar-events-list (noEventsForToday)="toggleFullscreenCalendar($event)" [class.hidden]="hideEvents"/>
 </main>

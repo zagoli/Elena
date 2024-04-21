@@ -11,5 +11,9 @@ import {CalendarEventsListComponent} from "./calendar-events-list/calendar-event
 	styleUrl: './app.component.css'
 })
 export class AppComponent {
-	title = 'Elena';
+	hideEvents = false;
+
+	toggleFullscreenCalendar(noEvents: boolean) {
+		this.hideEvents = noEvents;
+	}
 }

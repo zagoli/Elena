@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {CalendarEventsService} from "../calendar-events.service";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CalendarEvent} from "../types/CalendarEvent"
@@ -23,7 +23,9 @@ export class CalendarEventsListComponent {
 	getEventsError = false;
 	todayEvents: CalendarEvent[] = [];
 	calendarUrl = new FormControl("");
-	private today = new Date(2024, 11, 31);
+	@Output() noEventsForToday = new EventEmitter<boolean>();
+
+	private today = new Date();
 	private updateFrequencySeconds = 3600;
 	private removePastEventsFrequencySeconds = 60;
 
@@ -32,8 +34,6 @@ export class CalendarEventsListComponent {
 
 	startUpdates() {
 		this.getEvents();
-		console.log(this.todayEvents);
-		this.removePastEvents();
 		setInterval(() => {
 			this.getEvents();
 		}, 1000 * this.updateFrequencySeconds);
@@ -42,23 +42,32 @@ export class CalendarEventsListComponent {
 		}, 1000 * this.removePastEventsFrequencySeconds);
 	}
 
-	private removePastEvents(): void {
+	private updateDate() {
 		this.today = new Date();
-		this.todayEvents = this.todayEvents.filter((event) => event.endDate < this.today);
+	}
+
+	private removePastEvents(): void {
+		this.updateDate();
+		this.todayEvents = this.todayEvents.filter((event) => event.endDate > this.today);
 	}
 
 	private getEvents(): void {
-		this.today = new Date();
+		this.updateDate();
 		this.calendarEventsService.getCalendarFile(this.calendarUrl.value!)
 			.subscribe({
 				next: icsEvents => {
-					console.log(icsEvents);
 					this.urlSet = true;
 					this.getEventsError = false;
 					this.addEvents(icsEvents);
+					this.removePastEvents();
+					this.noEventsForToday.emit(this.todayEvents.length == 0);
 				},
 				error: () => {
 					this.getEventsError = true;
+					if (this.urlSet) {
+						alert("Errore nell'aggiornamento degli eventi");
+					}
+
 				}
 			});
 	}
@@ -66,7 +75,6 @@ export class CalendarEventsListComponent {
 	private addEvents(icsEvents: any[]) {
 		this.todayEvents = [];
 		const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
-		console.log(calendarEvents);
 		this.concatUniqueEvents(this.getEventsHappeningToday(calendarEvents));
 		this.concatUniqueEvents(this.getRecurrentEventsHappeningToday(icsEvents));
 
@@ -103,19 +111,16 @@ export class CalendarEventsListComponent {
 	}
 
 	private getEventsHappeningToday(events: CalendarEvent[]): CalendarEvent[] {
-		return events.filter((e: CalendarEvent) => {
-			console.log(e.startDate, this.today, this.datesEquals(e.startDate, this.today));
-			return this.datesEquals(e.startDate, this.today);
-		});
+		return events.filter((e: CalendarEvent) => this.datesEquals(e.startDate, this.today));
 	}
 
 	private getRecurrentEventsHappeningToday(events: any[]): CalendarEvent[] {
-		let recurrentPastEvents = events.filter((e: any) => {
-			return e.isRecurring() && e.startDate.toJSDate() <= this.today;
-		});
-		recurrentPastEvents = recurrentPastEvents.filter((e: any) => {
-			return this.doesRecurrentPastEventHappenToday(e);
-		});
+		let recurrentPastEvents = events.filter((e: any) =>
+			e.isRecurring() && e.startDate.toJSDate() <= this.today
+		);
+		recurrentPastEvents = recurrentPastEvents.filter((e: any) =>
+			this.doesRecurrentPastEventHappenToday(e)
+		);
 		return this.icsEventsToCalendarEvents(recurrentPastEvents);
 	}
 

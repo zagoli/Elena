@@ -3,8 +3,6 @@
 	<div class="info-box">
 		<p class="subject">{{ event?.summary }}</p>
 		<p class="location">{{ event?.location }}</p>
-		@if (event && event.description) {
-			<p class="description">{{ event.description }}</p>
-		}
+		<p class="description">{{ event?.description }}</p>
 	</div>
 </div>
