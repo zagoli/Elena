@@ -3,6 +3,7 @@ import {CalendarEventsService} from "../calendar-events.service";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CalendarEvent} from "../types/CalendarEvent"
 import {CalendarEventComponent} from "../calendar-event/calendar-event.component";
+import {compareTime, datesEquals, datesLessEquals, timeGreater} from "../date-utils/date-utils";
 // @ts-ignore
 import * as ICAL from 'ical.js';
 
@@ -49,7 +50,7 @@ export class CalendarEventsListComponent {
 	private removePastEvents(): void {
 		this.updateDate();
 		this.todayEvents = this.todayEvents.filter(
-			(event) => this.timeGreater(event.endDate, this.today)
+			(event) => timeGreater(event.endDate, this.today)
 		);
 	}
 
@@ -62,6 +63,7 @@ export class CalendarEventsListComponent {
 					this.getEventsError = false;
 					this.addEvents(icsEvents);
 					this.removePastEvents();
+					this.sortEventsByTime();
 					this.noEventsForToday.emit(this.todayEvents.length == 0);
 				},
 				error: () => {
@@ -79,8 +81,12 @@ export class CalendarEventsListComponent {
 		const calendarEvents = this.icsEventsToCalendarEvents(icsEvents);
 		this.concatUniqueEvents(this.getEventsHappeningToday(calendarEvents));
 		this.concatUniqueEvents(this.getRecurrentEventsHappeningToday(icsEvents));
+	}
 
-		this.todayEvents.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+	private sortEventsByTime(): void {
+		this.todayEvents.sort(
+			(a, b) => compareTime(a.startDate, b.endDate)
+		);
 	}
 
 	private concatUniqueEvents(events: CalendarEvent[]) {
@@ -113,7 +119,7 @@ export class CalendarEventsListComponent {
 	}
 
 	private getEventsHappeningToday(events: CalendarEvent[]): CalendarEvent[] {
-		return events.filter((e: CalendarEvent) => this.datesEquals(e.startDate, this.today));
+		return events.filter((e: CalendarEvent) => datesEquals(e.startDate, this.today));
 	}
 
 	private getRecurrentEventsHappeningToday(events: any[]): CalendarEvent[] {
@@ -134,30 +140,11 @@ export class CalendarEventsListComponent {
 
 		let next = expand.next();
 		do {
-			if (this.datesEquals(next.toJSDate(), this.today))
+			if (datesEquals(next.toJSDate(), this.today))
 				return true;
-		} while ((next = expand.next()) && this.datesLessEquals(next.toJSDate(), this.today));
+		} while ((next = expand.next()) && datesLessEquals(next.toJSDate(), this.today));
 
 		return false;
-	}
-
-	private datesLessEquals(date1: Date, date2: Date) {
-		return date1 < date2 || this.datesEquals(date1, date2);
-	}
-
-	private datesEquals(date1: Date, date2: Date): boolean {
-		const firstDate = structuredClone(date1);
-		const secondDate = structuredClone(date2);
-		firstDate.setHours(0, 0, 0, 0);
-		secondDate.setHours(0, 0, 0, 0);
-		return firstDate.getTime() === secondDate.getTime();
-	}
-
-	private timeGreater(date1: Date, date2: Date): boolean {
-		const firstDate = structuredClone(date1);
-		const secondDate = structuredClone(date1);
-		secondDate.setHours(date2.getHours(), date2.getMinutes(), date2.getSeconds(), date2.getMilliseconds());
-		return firstDate.getTime() > secondDate.getTime();
 	}
 
 }
