@@ -34,7 +34,7 @@ export class CalendarEventsService {
 	private handleError(error: HttpErrorResponse) {
 		if (error.status === 0 && !this.proxyTried) {
 			this.proxyTried = true;
-			return this.getCalendarFile("https://thingproxy.freeboard.io/fetch/" + encodeURIComponent(error.url!));
+			return this.getCalendarFile("https://api.allorigins.win/raw?url=" + encodeURIComponent(error.url!));
 		}
 		return throwError(() => new Error('Something bad happened; please try again later.'));
 	}
