@@ -48,7 +48,9 @@ export class CalendarEventsListComponent {
 
 	private removePastEvents(): void {
 		this.updateDate();
-		this.todayEvents = this.todayEvents.filter((event) => event.endDate > this.today);
+		this.todayEvents = this.todayEvents.filter(
+			(event) => this.timeGreater(event.endDate, this.today)
+		);
 	}
 
 	private getEvents(): void {
@@ -149,6 +151,13 @@ export class CalendarEventsListComponent {
 		firstDate.setHours(0, 0, 0, 0);
 		secondDate.setHours(0, 0, 0, 0);
 		return firstDate.getTime() === secondDate.getTime();
+	}
+
+	private timeGreater(date1: Date, date2: Date): boolean {
+		const firstDate = structuredClone(date1);
+		const secondDate = structuredClone(date1);
+		secondDate.setHours(date2.getHours(), date2.getMinutes(), date2.getSeconds(), date2.getMilliseconds());
+		return firstDate.getTime() > secondDate.getTime();
 	}
 
 }
