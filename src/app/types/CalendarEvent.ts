@@ -4,4 +4,5 @@ export interface CalendarEvent {
 	endDate: Date;
 	description: string;
 	location: string;
+	allDay: boolean;
 }

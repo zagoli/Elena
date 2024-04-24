@@ -50,7 +50,7 @@ export class CalendarEventsListComponent {
 	private removePastEvents(): void {
 		this.updateDate();
 		this.todayEvents = this.todayEvents.filter(
-			(event) => timeGreater(event.endDate, this.today)
+			(event) => timeGreater(event.endDate, this.today) || event.allDay
 		);
 	}
 
@@ -110,7 +110,8 @@ export class CalendarEventsListComponent {
 			startDate: icsEvent.startDate.toJSDate(),
 			endDate: icsEvent.endDate.toJSDate(),
 			description: icsEvent.description,
-			location: icsEvent.location
+			location: icsEvent.location,
+			allDay: icsEvent.startDate.isDate
 		}
 	}
 

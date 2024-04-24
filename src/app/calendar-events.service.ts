@@ -19,14 +19,11 @@ export class CalendarEventsService {
 			.pipe(
 				map((ics: string) => {
 					this.proxyTried = false; // if request succeeds, reset to retry later with proxy
-					console.log(ics);
 					const jCalData = ICAL.parse(ics);
 					const ICalendar = new ICAL.Component(jCalData);
 					return ICalendar.getAllSubcomponents('vevent').map((e: any) => new ICAL.Event(e));
 				}),
-				catchError(err => {
-					return this.handleError(err);
-				})
+				catchError(err => this.handleError(err))
 			)
 
 	}
